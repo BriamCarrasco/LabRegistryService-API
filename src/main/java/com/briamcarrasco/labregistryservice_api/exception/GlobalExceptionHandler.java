@@ -14,7 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Manejador global de excepciones para la API.
- * Captura y personaliza las respuestas de error para diferentes tipos de excepciones.
+ * Captura y personaliza las respuestas de error para diferentes tipos de excepciones,
+ * proporcionando mensajes claros y estructurados para el cliente.
  */
 @Slf4j
 @ControllerAdvice
@@ -113,6 +114,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
+    /**
+     * Maneja excepciones cuando se intenta crear un recurso duplicado.
+     *
+     * @param ex      Excepción de recurso duplicado.
+     * @param request Información de la petición.
+     * @return Respuesta con mensaje de recurso duplicado.
+     */
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<Map<String, Object>> handleDuplicateResource(DuplicateResourceException ex, WebRequest request) {
         Map<String, Object> error = new HashMap<>();

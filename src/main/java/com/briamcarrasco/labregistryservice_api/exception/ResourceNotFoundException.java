@@ -3,6 +3,7 @@ package com.briamcarrasco.labregistryservice_api.exception;
 /**
  * Excepción personalizada para indicar que un recurso no fue encontrado.
  * Se utiliza principalmente en los servicios cuando no se encuentra una entidad solicitada.
+ * Extiende de {@link RuntimeException} para permitir su uso como excepción no comprobada.
  */
 public class ResourceNotFoundException extends RuntimeException {
 
