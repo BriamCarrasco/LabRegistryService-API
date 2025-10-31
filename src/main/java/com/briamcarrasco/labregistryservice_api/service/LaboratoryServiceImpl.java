@@ -1,8 +1,10 @@
 package com.briamcarrasco.labregistryservice_api.service;
 
+import com.briamcarrasco.labregistryservice_api.exception.DuplicateResourceException;
 import com.briamcarrasco.labregistryservice_api.model.Laboratory;
 import com.briamcarrasco.labregistryservice_api.repository.LaboratoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,11 @@ public class LaboratoryServiceImpl implements LaboratoryService {
 
     @Override
     public Laboratory saveLaboratory(Laboratory laboratory) {
-        return laboratoryRepository.save(laboratory);
+        try {
+            return laboratoryRepository.save(laboratory);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateResourceException("Ya existe un laboratorio con el nombre: " + laboratory.getName());
+        }
     }
 
     @Override
@@ -41,7 +47,7 @@ public class LaboratoryServiceImpl implements LaboratoryService {
                     existingLab.setSpecialty(laboratory.getSpecialty());
                     return laboratoryRepository.save(existingLab);
                 })
-                .orElseThrow(() -> new RuntimeException("Laboratory not found"));
+                .orElseThrow(() -> new RuntimeException("Laboratorio no encontrado con ID: " + id));
     }
 
     @Override
