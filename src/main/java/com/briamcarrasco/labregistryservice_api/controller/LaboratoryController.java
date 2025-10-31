@@ -132,8 +132,8 @@ public class LaboratoryController {
      */
     @Operation(summary = "Buscar laboratorios por nombre")
     @ApiResponse(responseCode = "200", description = "Lista de laboratorios por nombre")
-    @GetMapping("/search")
-    public ResponseEntity<List<Laboratory>> getByName(@RequestParam String name) {
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Laboratory>> getByName(@PathVariable String name) {
         return ResponseEntity.ok(laboratoryService.findByName(name));
     }
 }
