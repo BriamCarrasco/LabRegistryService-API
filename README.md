@@ -1,80 +1,84 @@
-# LabRegistryService‑API
+# LabRegistryService-API
 
-## 🎯 Descripción
-Este proyecto es un microservicio desarrollado con **Spring Boot 3.4.4** y **Java 21**, orientado al registro y gestión de laboratorios o servicios veterinarios.  
-Permite registrar servicios, generar facturas, consultar datos, validar información y realizar pagos. La persistencia actualmente puede estar en memoria, con posibilidad de integrarse a una base de datos real.
+API REST de gestión de laboratorios desarrollada con Spring Boot 3 (Java 21) y Oracle Database. Expone operaciones CRUD y búsquedas por nombre y especialidad, con documentación OpenAPI/Swagger.
 
-## 🧰 Tecnologías utilizadas
-- Java 21  
-- Spring Boot 3.4.4  
-- Maven  
-- Spring Web, Spring Data JPA  
-- Oracle Driver (si aplica)  
-- Lombok  
-- Docker  
-- Scripts SQL (`Create tables.sql`)  
+## 🚀 Tecnologías
 
-## 📁 Estructura del proyecto
+- Java 21, Spring Boot 3.5.7
+- Spring Web, Spring Data JPA, Bean Validation
+- Spring Security (config abierta para desarrollo)
+- Oracle JDBC (Autonomous/Thin + Wallet)
+- springdoc-openapi (Swagger UI)
+- Docker (build y runtime)
+
+## 📁 Estructura
+
+- `controller/` Endpoints REST (`/api/laboratories`)
+- `service/` Lógica de negocio
+- `repository/` Acceso a datos (JPA)
+- `model/` Entidades JPA (`Laboratory`)
+- `security/` Configuración de seguridad (todo permitido en dev)
+
+## 🔐 Seguridad
+
+La configuración actual permite todas las solicitudes sin autenticación y habilita Swagger sin restricciones.
+
+- Swagger UI: http://localhost:8083/swagger-ui/index.html
+- OpenAPI JSON: http://localhost:8083/v3/api-docs
+
+## 🔌 Endpoints principales
+
+Base URL: `http://localhost:8083/api/laboratories`
+
+- `POST /` — Crear laboratorio
+- `GET /` — Listar todos
+- `GET /{id}` — Obtener por ID
+- `PUT /{id}` — Actualizar por ID
+- `DELETE /{id}` — Eliminar por ID
+- `GET /specialty/{specialty}` — Buscar por especialidad
+- `GET /name/{name}` — Buscar por nombre (parcial, case-insensitive)
+
+## 🏃 Ejecutar en desarrollo (Windows PowerShell)
+
+- Ejecutar con Maven Wrapper:
+
+```powershell
+# Compilar y correr
+./mvnw.cmd spring-boot:run
+
+# Pruebas
+./mvnw.cmd test
 ```
-/
-├─ .mvn/
-├─ src/
-│   ├─ main/
-│   ├─ test/
-│   └─ resources/
-├─ Create tables.sql
-├─ Dockerfile
-├─ pom.xml
-├─ mvnw, mvnw.cmd
-└─ README.md
+
+- Empaquetar JAR y ejecutar:
+
+```powershell
+./mvnw.cmd clean package -DskipTests
+java -jar target/labregistryservice-api-0.0.1-SNAPSHOT.jar
 ```
 
-## 🚀 Ejecución del proyecto
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/BriamCarrasco/LabRegistryService-API.git
-   cd LabRegistryService-API
-   ```
-2. Compilar con Maven:
-   ```bash
-   ./mvnw clean install
-   ```
-3. Ejecutar la aplicación:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-4. (Opcional) Usar Docker:
-   ```bash
-   docker build -t lab-registry-service .
-   docker run -p 8080:8080 lab-registry-service
-   ```
-5. Acceder al servicio en: `http://localhost:8080/api/v1/...`
+## 🐳 Docker
 
-## 🧩 Funcionalidades principales
-- Registro de servicios o productos  
-- Cálculo de costos y generación de facturas  
-- Validación de datos  
-- Consulta de facturas emitidas  
-- Integración con pagos  
-- Soporte para despliegue en Docker  
+```powershell
+# Construir imagen
+docker build -t labregistryservice-api:latest .
 
-## ⚙️ Configuración
-- Modifica `application.properties` o `application.yml` según tu entorno.  
-- Si se usa una base de datos real, configura URL, usuario y contraseña.  
-- El script `Create tables.sql` define la estructura inicial.
+# Ejecutar (mapea el puerto 8083)
+docker run --name labregistryservice-api -p 8083:8083 labregistryservice-api:latest
+```
 
-## 🧪 Pruebas
-- Se recomienda usar **JUnit 5** y **Mockito** para pruebas unitarias.  
-- Implementar pruebas de integración para los endpoints REST.  
 
-## 🤝 Contribución
-1. Haz *fork* del repositorio.  
-2. Crea una rama (`feature/nueva-funcionalidad`).  
-3. Realiza los cambios y abre un *Pull Request*.  
+## ✅ Validaciones del modelo `Laboratory`
 
-## 🪪 Licencia
-Este proyecto está bajo la licencia **MIT**.
+- `name`: único, mínimo 4 caracteres
+- `address`: máximo 150, requerido
+- `phone`: `+` opcional y 7–15 dígitos
+- `email`: formato válido, 5–100 caracteres
+- `website`: máximo 100 (opcional)
+- `specialty`: 2–50 caracteres, requerido
 
-## 👤 Autor
-**Briam Carrasco**  
-📦 [Repositorio GitHub](https://github.com/BriamCarrasco/LabRegistryService-API)
+## 🧪 Salud y logs
+
+- Puerto: `8083`
+- Logs: nivel DEBUG para Spring y Hibernate habilitados en `application.properties`
+
